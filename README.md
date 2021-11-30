@@ -67,6 +67,27 @@ def model_results(X_test, model, model_id):
     prediction_scorecard['recall_score'].append(recall_score(df_pred['actual'], df_pred['prediction']))
     prediction_scorecard['best_params'].append(str(model.best_params_))
     display(df_pred.head(10))
+    
+    
+# Support Vector Machines
+
+svm_params= {'svm__C': [0.1, 0.01, 0.001],
+             'svm__kernel': ['linear', 'poly', 'rbf'],
+             'svm__degree': [1, 2, 3],
+             'svm__gamma': [0.1, 0.01, 0.001]}
+
+svm_cv = GridSearchCV(prediction_model(SVC(probability=True), 'svm'),
+                      param_grid=svm_params,
+                      scoring=scoring, 
+                      refit='neg_log_loss',  
+                      verbose=10)
+
+# Train Model
+svm_cv.fit(X_train, y_train)
+
+# Test Model
+model_results(X_test, svm_cv, 'Support Vector Machines')
+display(pd.DataFrame(prediction_scorecard))
 ```
 
 ### 2.a. Support Vector Machines Example
